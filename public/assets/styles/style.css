@@ -2231,6 +2231,10 @@ label.divider:after {
     font-size: 15px;
 }
 
+.responsive-table {
+    padding-bottom: 30px;
+}
+
 .responsive-table table {
     border-collapse: collapse;
 }
@@ -2772,4 +2776,10 @@ p {
     content: url('../images/icons/mdi-file-excel.svg');
     vertical-align: -0.125em;
     opacity: 0.8
+}
+
+.gallery {
+    padding: 0 !important;
+    margin-top: 52px;
+    padding-bottom: 100px;
 }

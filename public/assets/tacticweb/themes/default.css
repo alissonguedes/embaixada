@@ -21,6 +21,13 @@ body {
     font-family: 'abel', sans-serif !important;
 }
 
+#body,
+#main {
+    min-height: inherit !important;
+    overflow: hidden;
+    /* padding-bottom: 100px; */
+}
+
 body,
 .btn,
 input:not([type]),

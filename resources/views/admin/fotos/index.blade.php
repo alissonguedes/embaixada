@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="responsive-table">
+    <div class="gallery">
 
         <div class="top flex mb-1">
 
