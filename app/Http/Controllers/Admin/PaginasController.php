@@ -254,9 +254,10 @@ class PaginasController extends Controller
 
                 $ul .= '<li class="dd-item" data-id="' . $m->id_pagina . '">';
 
-                $ul .= '<div class="dd-handle">';
-                $ul .= 'id: ' . $m->id_pagina . ' ' . tradutor($m->titulo);
-                $ul .= '</div>';
+                $ul .= '<div class="dd-handle dd3-handle"></div>';
+                $ul .= '<div class="dd-content">';
+                $ul .= $m->descricao;
+                $ul .= '<a href="' . route('admin.paginas.edit', $m->id_pagina) . '"><i class="material-icons">edit</i></a></div>';
 
                 $ul .= $this->getPaginas($id_menu, $m->id_pagina);
                 $ul .= '</li>';

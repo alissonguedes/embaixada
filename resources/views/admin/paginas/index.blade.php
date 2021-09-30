@@ -60,4 +60,78 @@
 
     </div>
 
+    <style>
+        .dd-content {
+            display: block;
+            height: 30px;
+            margin: 5px 0;
+            padding: 5px 10px 5px 40px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #000;
+            background: #000;
+            background: -webkit-linear-gradient(top, #000 0%, #000 100%);
+            background: -moz-linear-gradient(top, #000 0%, #000 100%);
+            background: linear-gradient(top, #000 0%, #000 100%);
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            font-size: 16px;
+            color: var(--amber);
+        }
+
+		.dd-dragel {
+			background: #000;
+		}
+
+		.dd-content a {
+			border: 1px solid #ddd;
+			display: block;
+			position: absolute;
+			top: 3px;
+			right: 10px;
+			bottom: 0;
+			display: flex;
+			flex: 1;
+			align-items: center;
+			place-content: center;
+			text-align: center;
+			width: 24px;
+			height: 24px;
+			border-radius: 24px;
+
+		}
+		.dd-content a i {
+			color: #fff !important;
+			font-size: 12px;
+		}
+        .dd3-handle {
+            position: absolute;
+            margin: 0;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+            width: 30px;
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid #000;
+            background: #000;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .dd3-handle:hover {
+            background: var(--amber);
+        }
+
+        .dd3-handle:hover::before {
+            color: #000 !important;
+        }
+
+
+    </style>
+
 @endsection
