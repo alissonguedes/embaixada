@@ -39,6 +39,16 @@ function core() {
         maxDepth: Infinity
     });
 
+    $('h4.title').each(function() {
+        var w = $(this).text().length;
+
+        $('h4.title::after').css({
+            'padding-left': 'calc(100% - ' + w + 'px)',
+            'background': 'pink !important'
+        });
+
+    })
+
     var id_item = null;
     $('.dd').each(function() {
         var self = $(this);

@@ -49,7 +49,7 @@
             @if ($paginate->count() > 0)
 
                 @foreach ($paginate as $menu)
-                    {{ $menu->label }}
+                    <h4 class="title">{{ $menu->label }}</h4>
                     <div class="dd">
                         @php echo $paginas -> getPaginas($menu -> id) @endphp
                     </div>
@@ -61,6 +61,30 @@
     </div>
 
     <style>
+        h4.title {
+            font-size: 24px;
+            color: #fff;
+            line-height: 2;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h4.title::after {
+            content: '';
+            color: #fff;
+            width: 100%;
+            border: none;
+            height: 1px;
+            line-height: 2;
+            background: #fff;
+            /* position: absolute; */
+            display: flex;
+            place-content: end;
+            /* align-items: center; */
+            line-height: 3rem;
+            top: 25px;
+        }
+
         .dd-content {
             display: block;
             height: 30px;
@@ -82,31 +106,36 @@
             color: var(--amber);
         }
 
-		.dd-dragel {
-			background: #000;
-		}
+        .dd-dragel {
+            background: #000;
+        }
 
-		.dd-content a {
-			border: 1px solid #ddd;
-			display: block;
-			position: absolute;
-			top: 3px;
-			right: 10px;
-			bottom: 0;
-			display: flex;
-			flex: 1;
-			align-items: center;
-			place-content: center;
-			text-align: center;
-			width: 24px;
-			height: 24px;
-			border-radius: 24px;
+        .dd-content .btn {
+            border: 1px solid #ddd;
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 10px;
+            bottom: 0;
+            display: flex;
+            flex: 1;
+            align-items: center;
+            place-content: center;
+            text-align: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 24px;
 
-		}
-		.dd-content a i {
-			color: #fff !important;
-			font-size: 12px;
-		}
+        }
+
+        .dd-content .btn i {
+            font-size: 12px;
+			top: -1px;
+			position: relative;
+        }
+
+        .dd-content .btn i {}
+
         .dd3-handle {
             position: absolute;
             margin: 0;
@@ -130,7 +159,6 @@
         .dd3-handle:hover::before {
             color: #000 !important;
         }
-
 
     </style>
 

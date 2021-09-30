@@ -257,7 +257,7 @@ class PaginasController extends Controller
                 $ul .= '<div class="dd-handle dd3-handle"></div>';
                 $ul .= '<div class="dd-content">';
                 $ul .= $m->descricao;
-                $ul .= '<a href="' . route('admin.paginas.edit', $m->id_pagina) . '"><i class="material-icons">edit</i></a></div>';
+                $ul .= '<button class="btn btn-small btn-flat btn-floating" style="margin-top: 0 !important;" data-href="' . route('admin.paginas.edit', $m->id_pagina) . '"><i class="material-icons">edit</i></button></div>';
 
                 $ul .= $this->getPaginas($id_menu, $m->id_pagina);
                 $ul .= '</li>';
