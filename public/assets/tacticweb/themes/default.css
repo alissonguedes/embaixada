@@ -439,6 +439,11 @@ header,
     transition: none;
 }
 
+.navbar .header-search-wrapper-focus,
+.navbar .header-search-wrapper.active {
+    background-color: #000 !important;
+}
+
 .navbar input.header-search-input:active,
 .navbar input.header-search-input:focus {
     background: transparent !important;
@@ -461,10 +466,6 @@ header,
 .navbar .header-search-wrapper label i {
     cursor: pointer;
     color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.navbar .header-search-wrapper-focus {
-    background-color: #000 !important;
 }
 
 .navbar .header-search-wrapper-focus input:focus,

@@ -101,13 +101,12 @@ $.extend($.fn.dataTableExt.oPagination, {
                 // Add the new list items and their event handlers
                 for (j = iStart; j <= iEnd; j++) {
                     sClass = (j == oPaging.iPage + 1) ? 'class="active"' : '';
-                    $('<li ' + sClass + '> \
-<a href="javascript:void(0);">' + j + '</a> \
-</li>').insertBefore($('li:last', an[i])[0]).bind('click', function(e) {
-                        e.preventDefault();
-                        oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
-                        fnDraw(oSettings);
-                    });
+                    $('<li ' + sClass + '><a href="javascript:void(0);">' + j + '</a></li>')
+                        .insertBefore($('li:last', an[i])[0]).bind('click', function(e) {
+                            e.preventDefault();
+                            oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
+                            fnDraw(oSettings);
+                        });
                 }
 
                 // Add / remove disabled classes from the static elements
@@ -362,9 +361,7 @@ function DataTable(refresh) {
             'sLengthMenu': '_MENU_',
             'sLengthMenu': '',
             'sLoadingRecords': 'Carregando...',
-            'sProcessing': '<div class="progress">\
-<div class="indeterminate"></div>\
-</div>',
+            'sProcessing': '<div class="progress"><div class="indeterminate"></div></div>',
             'sZeroRecords': '',
             'sSearch': (typeof table.data('label') !== 'undefined' && table.data('label') ? table.data('label') : ''),
             'sSearchPlaceholder': (typeof table.data('placeholder') !== 'undefined' && table.data('placeholder') ? table.data('placeholder') : null),
@@ -493,6 +490,14 @@ function DataTable(refresh) {
         search.bind('keyup paste', delay(function() {
             _self.search(this.value).draw();
         }));
+
+        search.bind('blur', function() {
+            if (search.val().length > 0) {
+                search.parents('.header-search-wrapper').addClass('active');
+            } else {
+                search.parents('.header-search-wrapper').removeClass('active');
+            }
+        })
 
         if (search.val() != '') {
             _self.search(search.val()).draw();
