@@ -305,8 +305,6 @@ class PaginaModel extends Authenticatable
 
             if (isset($menu[$i]['children'])) {
 
-                echo 'IdMenu: ' . $id_menu . ' Parent: ' . $id . 'Children: ' . $menu[$i]['children'][$i]['id'] . '<br>';
-
                 for ($j = 0; $j < count($menu[$i]['children']); $j++) {
                     $this->from('tb_pagina')->where('id', $menu[$i]['children'][$j]['id'])->update(['id_pagina' => $menu[$i]['id']]);
                     $this->update_menu($menu[$i]['children']);
