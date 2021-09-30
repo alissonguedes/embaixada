@@ -81,7 +81,7 @@ $input_label_hidden = null;
                         <label class="___class_+?16___">Grupo</label>
                         <select name="grupo">
                             <option value="" disabled="disabled" selected="selected">Selecione o grupo da página</option>
-                            <option value="0">Nenhum</option>
+                            <option value="0" {{ isset($row) && $row->id_pagina === 0 ? 'selected' : null }}>Nenhum</option>
 
                             @foreach ($paginas as $pag)
                                 <option value="{{ $pag->id }}" {{ isset($row) && $row->id_pagina == $pag->id ? 'selected="selected"' : null }}>{{ $pag->descricao }}</option>
