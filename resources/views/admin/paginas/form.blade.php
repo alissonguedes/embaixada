@@ -51,7 +51,7 @@ $input_label_hidden = null;
             <div class="row">
                 <div class="col s12 mb-1">
                     <div class="input-field">
-                        <label class="___class_+?8___">Nome da página</label>
+                        <label>Nome da página</label>
                         <input type="text" name="descricao" id="descricao" value="{{ isset($row) ? $row->descricao : null }}" autofocus="autofocus">
                     </div>
                 </div>
@@ -80,8 +80,8 @@ $input_label_hidden = null;
                     <div class="input-field">
                         <label>Grupo</label>
                         <select name="grupo">
-                            <option value="" disabled="disabled" selected="selected">Selecione o grupo da página</option>
-                            <option value="0" {{ isset($row) && $row->id_pagina === 0 ? 'selected' : null }}>Nenhum</option>
+                            <option value="" disabled="disabled" {{ !isset($row) ? 'selected' : null }}>Selecione o grupo da página</option>
+                            <option value="0" {{ isset($row) && $row->id_pagina == 0 ? 'selected' : null }}>Nenhum</option>
 
                             @foreach ($paginas as $pag)
                                 <option value="{{ $pag->id }}" {{ isset($row) && $row->id_pagina == $pag->id ? 'selected="selected"' : null }}>{{ $pag->descricao }}</option>
