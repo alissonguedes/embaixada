@@ -14,6 +14,8 @@
 <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/masonry/masonry.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/nestable/jquery.nestable.js') }}"></script>
+<script src="{{ asset('assets/plugins/nestable/extra-components-nestable.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/requirejs/require.js') }}"></script>
 
 <!-- scripts | Padrão -->

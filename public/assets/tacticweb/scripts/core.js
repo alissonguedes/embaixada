@@ -16,6 +16,7 @@ init = () => {
 
         // Página de Fotos [Renomear ou Adicionar um Álbum]
         var id_modal = null;
+        var URL = window.location.href;
 
         $('[data-target="modal-fotos"]').on('click', function() {
             id_modal = $(this).attr('id');
@@ -31,7 +32,7 @@ init = () => {
                 id_modal = parseInt(id_modal);
 
                 if (id_modal !== null && /^[0-9]+$/i.test(id_modal)) {
-                    Http.get('fotos/' + id_modal, {
+                    Http.get(URL + '/' + id_modal, {
                         'data': {
                             'action': 'rename'
                         },
@@ -46,7 +47,7 @@ init = () => {
 
                         $(m).find('input[name="_method"]').val('post');
 
-                        Http.get('fotos', {}, (response) => {
+                        Http.get(URL, {}, (response) => {
 
                             $(m).find('input[type="text"]').val('Novo álbum ' + (response.id + 1)).focus().select();
 

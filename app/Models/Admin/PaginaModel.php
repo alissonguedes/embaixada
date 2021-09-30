@@ -2,20 +2,17 @@
 
 namespace App\Models\Admin;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 
 class PaginaModel extends Authenticatable
 {
 
     use HasFactory, Notifiable;
 
-	protected $table = 'tb_pagina';
+    protected $table = 'tb_pagina';
 
     /**
      * The attributes that are mass assignable.
@@ -47,22 +44,23 @@ class PaginaModel extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-	private $order = [
-		null,
-		'descricao',
-		'status',
-	];
+    private $order = [
+        null,
+        'descricao',
+        'status',
+    ];
 
-	public function getPagina($find = null) {
+    public function getPagina($find = null)
+    {
 
-		$get = $this -> select('*');
+        $get = $this->select('*');
 
-		if ( !is_null($find) ) {
-			$get -> where('id', $find);
-			return $get ;
-		}
+        if (!is_null($find)) {
+            $get->where('id', $find);
+            return $get;
+        }
 
-		if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
+        if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
             $get->where(function ($get) {
                 $search = $_GET['search']['value'];
                 $get->orWhere('id', 'like', $search . '%')
@@ -71,262 +69,351 @@ class PaginaModel extends Authenticatable
             });
         }
 
-		// Order By
-		if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0 ) {
-			$orderBy[$this -> order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
-		} else {
-			$orderBy[$this -> order[1]] = 'desc';
-		}
+        // Order By
+        if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
+            $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
+        } else {
+            $orderBy[$this->order[1]] = 'asc';
+        }
 
-		foreach($orderBy as $key => $val) {
-			$get -> orderBy($key, $val);
-		}
+        foreach ($orderBy as $key => $val) {
+            $get->orderBy($key, $val);
+        }
 
-		return $get -> paginate($_GET['length'] ?? null);
+        return $get;
+        return $get->paginate($_GET['length'] ?? null);
 
-	}
+    }
 
-	public function create($request) {
+    public function create($request)
+    {
 
-		$path = 'assets/embaixada/documentos/';
-		$origName = null;
-		$fileName = null;
-		$arquivo = null;
+        $path = 'assets/embaixada/documentos/';
+        $origName = null;
+        $fileName = null;
+        $arquivo = null;
 
-		$traducao	= [];
-		$data = [
-			'id_pagina' => isset($request -> grupo) ? $request -> grupo : 0,
-			'id_menu' => $request -> menu,
-			'descricao' => $request -> descricao,
-			'slug' => limpa_string($request -> descricao),
-			'titulo' => null,
-			'subtitulo' => null,
-			'texto'		=> null,
-			'idioma'	=> $request -> idioma,
-			'status' => isset($request -> status) ? $request -> status : '0'
-		];
+        $traducao = [];
+        $data = [
+            'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
+            'id_menu' => $request->menu,
+            'descricao' => $request->descricao,
+            'slug' => limpa_string($request->descricao),
+            'titulo' => null,
+            'subtitulo' => null,
+            'texto' => null,
+            'idioma' => $request->idioma,
+            'status' => isset($request->status) ? $request->status : '0',
+        ];
 
-		foreach($_POST as $ind => $val) {
+        foreach ($_POST as $ind => $val) {
 
-			$lang = explode(':', $ind);
-			if ( count($lang) == 2) {
-				$traducao[$lang[1]][$lang[0]]  = $val;
-			}
-
-		}
-
-		if ( !is_null($arquivo) )
-			$data['arquivo'] = $path . $arquivo;
-
-		$data['titulo'] = json_encode($traducao['titulo']);
-		$data['subtitulo'] = json_encode($traducao['subtitulo']);
-		$data['texto'] = json_encode($traducao['texto']);
-
-        if ( $id = $this -> insertGetId($data)) {
-
-			if ( $request -> file('arquivo') ) {
-
-				$file = $request -> file('arquivo');
-
-				foreach ( $file as $f ) {
-
-					$fileName = $f -> getClientOriginalName();
-					$fileExt  = $f -> getClientOriginalExtension();
-					$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-
-					$imgName  = explode('.', ($f -> getClientOriginalName()));
-
-					$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-					$arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
-
-					$f -> storeAs($path, $arquivo);
-
-					$files[] = [
-						'id_modulo' => $id,
-						'modulo' => 'page',
-						'path' => $path . $arquivo,
-						'realname' => $origName,
-						'author' => Session::get('userdata')['nome'],
-						'titulo' => null,
-						'descricao' => null,
-						'clicks' => 0,
-						'url' => null,
-						'size' => $f -> getSize()
-					];
-
-				}
-
-				$this -> from('tb_attachment') -> insert($files);
-
-			}
-
-			return true;
+            $lang = explode(':', $ind);
+            if (count($lang) == 2) {
+                $traducao[$lang[1]][$lang[0]] = $val;
+            }
 
         }
 
-		return false;
+        if (!is_null($arquivo)) {
+            $data['arquivo'] = $path . $arquivo;
+        }
 
-	}
+        $data['titulo'] = json_encode($traducao['titulo']);
+        $data['subtitulo'] = json_encode($traducao['subtitulo']);
+        $data['texto'] = json_encode($traducao['texto']);
 
-	public function getAttach($id) {
+        if ($id = $this->insertGetId($data)) {
 
-		return $this -> select('*')
-			-> from('tb_attachment')
-			-> where('id_modulo', $id)
-			-> where('modulo', 'page')
-			-> orderBy('realname')
-			-> get();
+            if ($request->file('arquivo')) {
 
-	}
+                $file = $request->file('arquivo');
 
-	public function getGrupo($id = null) {
-		$pag = $this -> select('id', 'id_pagina', 'descricao')
-			-> from('tb_pagina');
+                foreach ($file as $f) {
 
-		if ( ! is_null($id) ) $pag -> where('id', '<>', $id);
+                    $fileName = $f->getClientOriginalName();
+                    $fileExt = $f->getClientOriginalExtension();
+                    $fileExt = $fileExt != '' ? '.' . $fileExt : '.txt';
 
-		return $pag -> get();
-	}
+                    $imgName = explode('.', ($f->getClientOriginalName()));
 
-	public function edit($request, $field = null) {
+                    $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                    $arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
 
-		$files = [];
-		$path = 'assets/embaixada/documentos/';
-		$origName = null;
-		$fileName = null;
-		$arquivo = null;
+                    $f->storeAs($path, $arquivo);
 
-		if ( is_null($field) ) {
+                    $files[] = [
+                        'id_modulo' => $id,
+                        'modulo' => 'page',
+                        'path' => $path . $arquivo,
+                        'realname' => $origName,
+                        'author' => Session::get('userdata')['nome'],
+                        'titulo' => null,
+                        'descricao' => null,
+                        'clicks' => 0,
+                        'url' => null,
+                        'size' => $f->getSize(),
+                    ];
 
-			if ( $request -> file('arquivo') ) {
+                }
 
-				$file = $request -> file('arquivo');
+                $this->from('tb_attachment')->insert($files);
 
-				foreach ( $file as $f ) {
+            }
 
-					$fileName = $f -> getClientOriginalName();
-					$fileExt  = $f -> getClientOriginalExtension();
-					$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+            return true;
 
-					$imgName  = explode('.', ($f -> getClientOriginalName()));
+        }
 
-					$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-					$arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+        return false;
 
-					$f -> storeAs($path, $arquivo);
+    }
 
-					$files[] = [
-						'id_modulo' => $request -> id,
-						'modulo' => 'page',
-						'path' => $path . $arquivo,
-						'realname' => $origName,
-						'author' => Session::get('userdata')['nome'],
-						'titulo' => null,
-						'descricao' => null,
-						'clicks' => 0,
-						'url' => null,
-						'size' => $f -> getSize()
-					];
+    public function getAttach($id)
+    {
 
-				}
+        return $this->select('*')
+            ->from('tb_attachment')
+            ->where('id_modulo', $id)
+            ->where('modulo', 'page')
+            ->orderBy('realname')
+            ->get();
 
-				$this -> from('tb_attachment') -> insert($files);
+    }
 
-			}
+    public function getGrupo($id = null)
+    {
+        $pag = $this->select('id', 'id_pagina', 'descricao')
+            ->from('tb_pagina');
 
-			if ( isset($request -> album)){
+        if (!is_null($id)) {
+            $pag->where('id', '<>', $id);
+        }
 
-				foreach($request -> album as $album) {
+        return $pag->get();
+    }
 
-					$issetAlbum = $this -> from('tb_pagina_album') -> select('id') -> where('id_album', $album) -> where('id_pagina', $request -> id) -> get() -> first();
+    public function edit($request, $field = null)
+    {
 
-					if ( ! isset($issetAlbum) ) {
-						$this -> from('tb_pagina_album') -> insert(['id_pagina' => $request -> id, 'id_album' => $album]);
-					}
+        $files = [];
+        $path = 'assets/embaixada/documentos/';
+        $origName = null;
+        $fileName = null;
+        $arquivo = null;
 
-				}
+        if (is_null($field)) {
 
-				$this -> from('tb_pagina_album') -> whereNotIn('id_album', $request -> album) -> where('id_pagina', $request -> id) -> delete();
+            if ($request->file('arquivo')) {
 
-			}
+                $file = $request->file('arquivo');
 
-			$traducao	= [];
-			$data = [
-				'id_pagina' => isset($request -> grupo) ? $request -> grupo : 0,
-				'id_menu' => $request -> menu,
-				'tipo' => $request -> tipo_pagina ?? 'post',
-				'descricao' => $request -> descricao,
-				'slug' => limpa_string($request -> descricao),
-				'titulo' => null,
-				'subtitulo' => null,
-				'texto'		=> null,
-				'idioma'	=> $request -> idioma,
-				'status' => isset($request -> status) ? $request -> status : '0'
-			];
+                foreach ($file as $f) {
 
-			foreach($_POST as $ind => $val) {
-				$lang = explode(':', $ind);
-				if ( count($lang) == 2) {
-					$traducao[$lang[1]][$lang[0]] = $val;
-				}
-			}
+                    $fileName = $f->getClientOriginalName();
+                    $fileExt = $f->getClientOriginalExtension();
+                    $fileExt = $fileExt != '' ? '.' . $fileExt : '.txt';
 
-			$data['titulo'] = json_encode($traducao['titulo']);
-			$data['subtitulo'] = json_encode($traducao['subtitulo']);
-			$data['texto'] = json_encode($traducao['texto']);
+                    $imgName = explode('.', ($f->getClientOriginalName()));
 
-			return $this -> where('id', $request -> id) -> update($data);
+                    $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                    $arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
 
-		} else {
+                    $f->storeAs($path, $arquivo);
 
-			$data = [ $field =>  $request -> value ];
+                    $files[] = [
+                        'id_modulo' => $request->id,
+                        'modulo' => 'page',
+                        'path' => $path . $arquivo,
+                        'realname' => $origName,
+                        'author' => Session::get('userdata')['nome'],
+                        'titulo' => null,
+                        'descricao' => null,
+                        'clicks' => 0,
+                        'url' => null,
+                        'size' => $f->getSize(),
+                    ];
 
-			return $this -> whereIn('id', $request -> id) -> update($data);
+                }
 
-		}
+                $this->from('tb_attachment')->insert($files);
 
-	}
+            }
 
-	public function remove($request) {
+            if (isset($request->album)) {
 
-		$this -> remove_file($request -> id);
-		return $this -> whereIn('id', $request -> id) -> delete();
+                foreach ($request->album as $album) {
 
-	}
+                    $issetAlbum = $this->from('tb_pagina_album')->select('id')->where('id_album', $album)->where('id_pagina', $request->id)->get()->first();
 
-	public function remove_file($id) {
+                    if (!isset($issetAlbum)) {
+                        $this->from('tb_pagina_album')->insert(['id_pagina' => $request->id, 'id_album' => $album]);
+                    }
 
-		if ( is_array($id) ) {
-			$column = 'id_modulo';
-		} else {
-			$column = 'id';
-		}
+                }
 
-		$files = $this -> from('tb_attachment')
-			-> select('path')
-			-> where($column, $id)
-			-> get();
+                $this->from('tb_pagina_album')->whereNotIn('id_album', $request->album)->where('id_pagina', $request->id)->delete();
 
-		if ( isset($files) )
-		{
+            }
 
-			foreach ( $files as $file ) {
+            $traducao = [];
+            $data = [
+                'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
+                'id_menu' => $request->menu,
+                'tipo' => $request->tipo_pagina ?? 'post',
+                'descricao' => $request->descricao,
+                'slug' => limpa_string($request->descricao),
+                'titulo' => null,
+                'subtitulo' => null,
+                'texto' => null,
+                'idioma' => $request->idioma,
+                'status' => isset($request->status) ? $request->status : '0',
+            ];
 
-				$file = public_path($file -> path);
+            foreach ($_POST as $ind => $val) {
+                $lang = explode(':', $ind);
+                if (count($lang) == 2) {
+                    $traducao[$lang[1]][$lang[0]] = $val;
+                }
+            }
 
-			}
+            $data['titulo'] = json_encode($traducao['titulo']);
+            $data['subtitulo'] = json_encode($traducao['subtitulo']);
+            $data['texto'] = json_encode($traducao['texto']);
 
-			$un = file_exists($file) ? unlink($file) : true;
+            return $this->where('id', $request->id)->update($data);
 
-			if ( $un )
-				return $this -> from('tb_attachment') -> where($column, $id) -> delete();
+        } else {
 
-			return true;
+            $data = [$field => $request->value];
 
-		}
+            return $this->whereIn('id', $request->id)->update($data);
 
-		return false;
+        }
 
-	}
+    }
+
+    public function update_menu($menu)
+    {
+
+        $arr_id = [];
+        $id_menu = $_POST['idMenu'];
+
+        for ($i = 0; $i < count($menu); $i++) {
+
+            $id = $menu[$i]['id'];
+
+            if (isset($menu[$i]['children'])) {
+
+                echo 'IdMenu: ' . $id_menu . ' Parent: ' . $id . 'Children: ' . $menu[$i]['children'][$i]['id'] . '<br>';
+
+                for ($j = 0; $j < count($menu[$i]['children']); $j++) {
+                    $this->from('tb_pagina')->where('id', $menu[$i]['children'][$j]['id'])->update(['id_pagina' => $menu[$i]['id']]);
+                    $this->update_menu($menu[$i]['children']);
+                }
+
+            }
+
+            $arr_id[] = $id;
+
+        }
+
+        $debug=$this->from('tb_pagina')->where('id_menu', $id_menu)->whereNotIn('id', $arr_id);//->update(['id_pagina' => 0]);
+		$this -> debug($debug);
+
+    }
+
+    public function remove($request)
+    {
+
+        $this->remove_file($request->id);
+        return $this->whereIn('id', $request->id)->delete();
+
+    }
+
+    public function remove_file($id)
+    {
+
+        if (is_array($id)) {
+            $column = 'id_modulo';
+        } else {
+            $column = 'id';
+        }
+
+        $files = $this->from('tb_attachment')
+            ->select('path')
+            ->where($column, $id)
+            ->get();
+
+        if (isset($files)) {
+
+            foreach ($files as $file) {
+
+                $file = public_path($file->path);
+
+            }
+
+            $un = file_exists($file) ? unlink($file) : true;
+
+            if ($un) {
+                return $this->from('tb_attachment')->where($column, $id)->delete();
+            }
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    public function debug($get)
+    {
+        echo '==> ';
+        echo '<br>';
+        $query = str_replace(array('?'), array('\'%s\''), $get->toSql());
+        $query = vsprintf($query, $get->getBindings());
+        dump($query);
+        echo '<br>';
+        echo '==> ';
+    }
+
+    // public function getSubPages($page = null, $idioma = null)
+    // {
+    //     $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
+    //         ->from('tb_pagina AS P')
+    //         ->where('P.status', '1');
+    //     $page = !is_null($page) ? $page : 0;
+    //     $get->where('P.id_pagina', $page);
+    //     // if (!is_null($this->limit)) {
+    //     //     $get->limit($this->limit);
+    //     // }
+    //     // $get->orderBy('descricao', 'asc');
+    //     return $get->get();
+    // }
+
+    public function getSubPages($id_menu, $page = null, $idioma = null)
+    {
+
+        $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
+            ->from('tb_pagina AS P')
+            ->join('tb_acl_menu AS M', 'M.id', '=', 'P.id_menu')
+            ->where('P.status', '1');
+
+        $get->where('P.id_menu', $id_menu);
+
+        $page = !is_null($page) ? $page : 0;
+
+        $get->where('P.id_pagina', $page);
+
+        // if (!is_null($this->limit)) {
+        //     $get->limit($this->limit);
+        // }
+
+        $get->orderBy('descricao', 'asc');
+
+        return $get->get();
+
+    }
 
 }

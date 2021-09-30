@@ -10,9 +10,16 @@
 
         <div class="mil-pixel">
 
+            <form method="post" action="" class="left">
+                <input type="text" name="busca" class="barrabusca" placeholder="{{ tradutor(['en' => 'Search the site', 'hr' => 'Keressen az oldalon', 'pt-br' => 'Pesquisar no site']) }}">
+                <!--fixo-->
+                <div class="bt_busca">
+                    <img src="{{ asset('assets/embaixada/img/lupa.png') }}" class="img_cem">
+                </div>
+            </form>
+
             <!--idioma-->
-            <div class="idioma right"
-                data-url-lang="{{ url('api/translate/' . ($_COOKIE['idioma'] ?? get_config('language'))) }}">
+            <div class="idioma left" style="margin-top: 4px; margin-left: 15px;" data-url-lang="{{ url('api/translate/' . ($_COOKIE['idioma'] ?? get_config('language'))) }}">
 
                 {? $idiomas = new App\Models\Main\IdiomaModel(); ?}
 
@@ -27,13 +34,14 @@
 
                     <div class="icon_idioma {{ $class }}">
                         <a href="{{ url('api/translate/' . $lang->sigla) }}" class="languages" id="pt-br">
-                            {{ $lang->sigla }}
+                            {{ $lang->label }}
                             {{-- <img src="{{ asset($lang->imagem) }}" class="img_cem"> --}}
                         </a>
                     </div>
                 @endforeach
 
             </div>
+            <!-- idioma -->
 
         </div>
 
@@ -59,15 +67,6 @@
                 </div>
                 <!--fixo-->
             </div>
-
-            <form method="post" action="" class="right">
-                <input type="text" name="busca" class="barrabusca"
-                    placeholder="{{ tradutor(['en' => 'Search the site', 'hr' => 'Keressen az oldalon', 'pt-br' => 'Pesquisar no site']) }}">
-                <!--fixo-->
-                <div class="bt_busca">
-                    <img src="{{ asset('assets/embaixada/img/lupa.png') }}" class="img_cem">
-                </div>
-            </form>
 
         </div>
 
