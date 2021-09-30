@@ -62,7 +62,7 @@ $input_label_hidden = null;
             <div class="row">
                 <div class="col s12 mb-1">
                     <div class="input-field">
-                        <label class="___class_+?12___">Menu da página</label>
+                        <label >Menu da página</label>
                         <select name="menu">
                             <option value="" disabled="disabled" selected="selected">Selecione o menu da página</option>
                             @foreach ($menus as $menu)
@@ -78,7 +78,7 @@ $input_label_hidden = null;
             <div class="row">
                 <div class="col s12 mb-1">
                     <div class="input-field">
-                        <label class="___class_+?16___">Grupo</label>
+                        <label>Grupo</label>
                         <select name="grupo">
                             <option value="" disabled="disabled" selected="selected">Selecione o grupo da página</option>
                             <option value="0" {{ isset($row) && $row->id_pagina === 0 ? 'selected' : null }}>Nenhum</option>
@@ -97,7 +97,7 @@ $input_label_hidden = null;
             <div class="row">
                 <div class="col s12 mb-1">
                     <div class="input-field">
-                        <label class="___class_+?20___">Idioma Padrão da página</label>
+                        <label>Idioma Padrão da página</label>
                         <select name="idioma">
                             <option value="" disabled="disabled" selected="selected">Selecione o idioma padrão da página</option>
 
