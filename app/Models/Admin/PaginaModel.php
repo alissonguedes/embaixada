@@ -316,8 +316,8 @@ class PaginaModel extends Authenticatable
 
         }
 
-        $debug=$this->from('tb_pagina')->where('id_menu', $id_menu)->whereNotIn('id', $arr_id);//->update(['id_pagina' => 0]);
-		$this -> debug($debug);
+        $debug = $this->from('tb_pagina')->where('id_menu', $id_menu)->whereNotIn('id', $arr_id); //->update(['id_pagina' => 0]);
+        $this->debug($debug);
 
     }
 
@@ -348,13 +348,12 @@ class PaginaModel extends Authenticatable
             foreach ($files as $file) {
 
                 $file = public_path($file->path);
+                $un = file_exists($file) ? unlink($file) : true;
 
-            }
+                if ($un) {
+                    return $this->from('tb_attachment')->where($column, $id)->delete();
+                }
 
-            $un = file_exists($file) ? unlink($file) : true;
-
-            if ($un) {
-                return $this->from('tb_attachment')->where($column, $id)->delete();
             }
 
             return true;

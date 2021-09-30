@@ -62,7 +62,7 @@ $input_label_hidden = null;
             <div class="row">
                 <div class="col s12 mb-1">
                     <div class="input-field">
-                        <label >Menu da página</label>
+                        <label>Menu da página</label>
                         <select name="menu">
                             <option value="" disabled="disabled" selected="selected">Selecione o menu da página</option>
                             @foreach ($menus as $menu)
