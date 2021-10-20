@@ -1,8 +1,12 @@
 <header>
 
-    <!--img_bandeira_angola-->
-    <div class="simbolo_angola">
-        <img src="{{ asset('assets/embaixada/img/simbolo_angola.png') }}" class="img_cem">
+    <div class="mil-pixel">
+
+        <!--img_bandeira_angola-->
+        <div class="simbolo_angola">
+            <img src="{{ asset('assets/embaixada/img/simbolo_angola.png') }}" class="img_cem">
+        </div>
+
     </div>
 
     <!--barra de pesquisa-->

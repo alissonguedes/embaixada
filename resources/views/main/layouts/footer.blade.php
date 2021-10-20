@@ -49,27 +49,27 @@
             </div>
 
             <div class="social_icons">
-                <a href="" target="_blank">
+                <a href="{{ get_config('whatsapp') }}" target="_blank">
                     <div class="icon_social">
                         <img src="{{ asset('assets/embaixada/img/icon/whatsapp.png') }}" class="img_cem">
                     </div>
                 </a>
-                <a href="" target="_blank">
+                <a href="{{ get_config('telegram') }}" target="_blank">
                     <div class="icon_social">
                         <img src="{{ asset('assets/embaixada/img/icon/telegram.png') }}" class="img_cem">
                     </div>
                 </a>
-                <a href="" target="_blank">
+                <a href="{{ get_config('instagram') }}" target="_blank">
                     <div class="icon_social">
                         <img src="{{ asset('assets/embaixada/img/icon/instagram.png') }}" class="img_cem">
                     </div>
                 </a>
-                <a href="" target="_blank">
+                <a href="{{ get_config('facebook') }}" target="_blank">
                     <div class="icon_social">
                         <img src="{{ asset('assets/embaixada/img/icon/facebook.png') }}" class="img_cem">
                     </div>
                 </a>
-                <a href="" target="_blank">
+                <a href="{{ get_config('youtube') }}" target="_blank">
                     <div class="icon_social">
                         <img src="{{ asset('assets/embaixada/img/icon/youtube.png') }}" class="img_cem">
                     </div>

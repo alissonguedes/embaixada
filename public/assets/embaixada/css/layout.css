@@ -162,12 +162,15 @@ header .topbar {
 }
 
 .simbolo_angola {
-    width: 250px;
-    height: 504px;
+    /* width: 250px;
+    height: 504px; */
+    width: 100px;
+    /* top: 15px;
     position: absolute;
     z-index: 11;
-    right: 25px;
-    top: 10px;
+    right: 460px; */
+    /* right: 25px; */
+    /* top: 10px; */
 }
 
 .head_1 {

@@ -347,7 +347,7 @@ class PaginaModel extends Authenticatable
 
             foreach ($files as $file) {
 
-                $file = public_path($file->path);
+                $file = storage_path('app/' . $file->path);
                 $un = file_exists($file) ? unlink($file) : true;
 
                 if ($un) {

@@ -117,14 +117,13 @@ Route::prefix('/admin')->group(function ($admin) {
     Route::prefix('paginas/menus')->group(function () {
 
         Route::get('/', [PaginasController::class, 'menus'])->name('admin.paginas.menus');
-		// Route::get('/add')
-		Route::post('/', [PaginasController::class, 'update_menu'])->name('admin.paginas.menus.update');
+        // Route::get('/add')
+        Route::post('/', [PaginasController::class, 'update_menu'])->name('admin.paginas.menus.update');
 
     });
 
     /** Links Rápidos */
     Route::prefix('links')->group(function () {
-
         Route::get('/', [LinksRapidosController::class, 'index'])->name('admin.links');
         Route::get('/add', [LinksRapidosController::class, 'show_form'])->name('admin.links.add');
         Route::get('/{id}', [LinksRapidosController::class, 'show_form'])->name('admin.links.edit')->where('id', '[0-9]+');
@@ -289,6 +288,7 @@ Route::prefix('/')->group(function () {
     foreach ($menus->getMenus() as $menu) {
         Route::get('{' . $menu->link . '}', [Paginas::class, 'index']);
         Route::get('{' . $menu->link . '}/{param?}', [Paginas::class, 'index']);
+        Route::get('{' . $menu->link . '}/file/{file}', [Paginas::class, 'download'])->name('paginas.download');
     }
 
 });

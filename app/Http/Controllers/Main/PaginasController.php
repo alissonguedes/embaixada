@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Main;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
+use Illuminate\Http\Request;
 
 class PaginasController extends Controller
 {
@@ -107,6 +108,30 @@ class PaginasController extends Controller
         }
 
         return $ul;
+
+    }
+
+    public function download(Request $request, $page, $file)
+    {
+
+        $file = $this->pagina_model->select(
+            'id',
+            'realname',
+            'path',
+            'size',
+            'clicks'
+        )
+            ->from('tb_attachment')
+            ->where('id', $file)
+            ->first();
+
+        $this->pagina_model->from('tb_attachment')->where('id', $file->id)->update(['clicks' => $file->clicks + 1]);
+
+        $ext = explode('.', basename($file->path));
+        $name = explode('.' . $ext[count($ext) - 1], $file->realname);
+        $filename = $page . '_' . $name[0] . '.' . $ext[count($ext) - 1];
+
+        return download($file->path, $filename);
 
     }
 

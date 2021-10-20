@@ -79,7 +79,7 @@ $input_label_hidden = null;
 
                             @foreach ($idiomas as $idioma)
 
-                                <div id="{{ limpa_string($idioma->sigla, '') }}" class="___class_+?22___">
+                                <div id="{{ limpa_string($idioma->sigla, '') }}" class="">
 
                                     {? $titulo = isset($row) && !empty($row -> titulo) ? json_decode($row -> titulo, true) : null; ?}
                                     {? $subtitulo = isset($row) && !empty($row -> subtitulo) ? json_decode($row -> subtitulo, true) : null; ?}
