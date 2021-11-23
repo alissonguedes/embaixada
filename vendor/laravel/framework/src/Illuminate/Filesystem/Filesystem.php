@@ -326,7 +326,9 @@ class Filesystem
      */
     public function link($target, $link)
     {
-        if (! windows_os()) {
+	        echo $target . ' -> ' . $link;
+    
+	if (! windows_os()) {
             return symlink($target, $link);
         }
 
