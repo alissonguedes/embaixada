@@ -31,7 +31,7 @@ class FotosController extends Controller
         }
 
         if ($request->ajax()) {
-			return response($this -> foto_model->getLastAlbum(), 200);
+            return response($this->foto_model->getLastAlbum(), 200);
         }
 
         $dados['paginate'] = $this->foto_model->getAlbum();
@@ -56,6 +56,8 @@ class FotosController extends Controller
         if (!is_null($id)) {
             $dados['row'] = $this->foto_model->getAlbum($id)->first();
         }
+
+        $dados['paginate'] = $this->foto_model->getFotos($id);
 
         $dados['idiomas'] = $this->idioma_model->getIdioma();
         $dados['menus'] = $this->menu_model->getMenu();
@@ -86,7 +88,7 @@ class FotosController extends Controller
             'nome' => ['required', 'unique:tb_album,nome', 'max:255'],
         ]);
 
-        $url = url('admin/fotos ');
+        $url = url('admin/galeria');
         $type = 'back';
 
         if ($this->foto_model->create($request)) {
@@ -116,7 +118,7 @@ class FotosController extends Controller
             'nome' => ['required', Rule::unique('tb_album', 'nome')->ignore($_POST['id'], 'id'), 'max:255'],
         ]);
 
-        $url = url('admin/fotos ');
+        $url = url('admin/galeria ');
         $type = 'back';
 
         if ($this->foto_model->edit($request)) {
@@ -142,7 +144,7 @@ class FotosController extends Controller
 
         }
 
-        $url = url('admin/fotos');
+        $url = url('admin/galeria');
         $type = null;
 
         if ($this->foto_model->edit($request, $field)) {
@@ -168,7 +170,7 @@ class FotosController extends Controller
 
         }
 
-        $url = url('admin/fotos');
+        $url = url('admin/galeria');
         $type = 'back';
 
         if ($this->foto_model->remove([$id])) {
@@ -195,7 +197,7 @@ class FotosController extends Controller
 
         }
 
-        $url = url('admin/fotos');
+        $url = url('admin/galeria');
         $type = 'back';
 
         if ($this->foto_model->remove_file($file)) {

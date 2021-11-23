@@ -29,6 +29,12 @@ namespace App\Http\Controllers\Admin {
 
 		}
 
+		public function quem_somos() {
+
+			return response(view('admin.home.quem_somos'), 200);
+
+		}
+
 	}
 
 }

@@ -2,203 +2,274 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin\IdiomaModel;
+use App\Models\Admin\MenuModel;
+use App\Models\Admin\PaginaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 
-use App\Models\Admin\PaginaModel;
-use App\Models\Admin\MenuModel;
-use App\Models\Admin\IdiomaModel;
-
 class PaginasController extends Controller
 {
-	public function __construct()
-	{
-		$this->pagina_model = new PaginaModel();
-		$this->menu_model = new MenuModel();
-		$this->idioma_model = new IdiomaModel();
-	}
 
-	public function index(Request $request)
-	{
+    private $menus_pag = [];
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+    public function __construct()
+    {
+        $this->pagina_model = new PaginaModel();
+        $this->menu_model = new MenuModel();
+        $this->idioma_model = new IdiomaModel();
+    }
 
-		if ($request->ajax()) {
-			$dados['paginate'] = $this->pagina_model->getPagina();
+    public function index(Request $request)
+    {
 
-			return view('admin.paginas.list', $dados);
-		}
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
 
-		return view('admin.paginas.index');
-	}
+        }
 
-	public function show_form(Request $request, $id = null)
-	{
+        if ($request->ajax()) {
+            $dados['paginate'] = $this->pagina_model->getPagina();
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+            return view('admin.paginas.list', $dados);
+        }
 
-		$dados = [];
+        $dados['paginas'] = $this;
+        $dados['paginate'] = $this->menu_model->getMenu();
 
-		if (!is_null($id)) {
-			$dados['row'] = $this->pagina_model->getPagina($id)->first();
-		}
+        return view('admin.paginas.index', $dados);
+    }
 
-		$dados['paginas'] = $this -> pagina_model -> getGrupo($id);
-		$dados['idiomas'] = $this->idioma_model->getIdioma();
-		$dados['menus'] = $this->menu_model->getMenu();
+    public function show_form(Request $request, $id = null)
+    {
 
-		return view('admin.paginas.form', $dados);
-	}
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
 
-	public function insert(Request $request)
-	{
+        }
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        $dados = [];
 
-		$request->validate([
-			'descricao' => ['required', 'unique:tb_pagina,descricao', 'max:255'],
-			'menu' => ['required'],
-			'idioma' => ['required'],
-		]);
+        if (!is_null($id)) {
+            $dados['row'] = $this->pagina_model->getPagina($id)->first();
+        }
 
-		$url = url('admin/paginas ');
-		$type = 'back';
+        $dados['paginas'] = $this->pagina_model->getGrupo($id);
+        $dados['idiomas'] = $this->idioma_model->getIdioma();
+        $dados['menus'] = $this->menu_model->getMenu();
 
-		if ($this->pagina_model->create($request)) {
-			$status = 'success';
-			$message = 'Idioma cadastrado com sucesso!';
-		} else {
-			$status = 'error';
-			$message = 'Não foi possível cadastrar o idioma. Por favor, tente novamente.';
-		}
+        return view('admin.paginas.form', $dados);
+    }
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
-	}
+    public function insert(Request $request)
+    {
 
-	public function update(Request $request)
-	{
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        }
 
-		$request->validate([
-			'descricao' => ['required', Rule::unique('tb_pagina', 'descricao')->ignore($_POST['id'], 'id'), 'max:255'],
-			'menu' => ['required'],
-			'idioma' => ['required'],
-		]);
+        $request->validate([
+            'descricao' => ['required', 'unique:tb_pagina,descricao', 'max:255'],
+            'menu' => ['required'],
+            'idioma' => ['required'],
+        ]);
 
-		$request -> validate([
-			'arquivo' => 'required|max:8192'
-		]);
+        $url = url('admin/paginas ');
+        $type = 'back';
 
-		$url = url('admin/paginas ');
-		$type = 'back';
+        if ($this->pagina_model->create($request)) {
+            $status = 'success';
+            $message = 'Idioma cadastrado com sucesso!';
+        } else {
+            $status = 'error';
+            $message = 'Não foi possível cadastrar o idioma. Por favor, tente novamente.';
+        }
 
-		if ($this->pagina_model->edit($request)) {
-			$status = 'success';
-			$message = 'Pagina atualizado com sucesso!';
-		} else {
-			$status = 'error';
-			$message = 'Não foi possível atualizar o pagina. Por favor, tente novamente.';
-		}
+        return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+    }
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
-	}
+    public function update(Request $request)
+    {
 
-	public function replace(Request $request, $field)
-	{
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        }
 
-		$url = url('admin/paginas');
-		$type = null;
+        $request->validate([
+            'descricao' => ['required', Rule::unique('tb_pagina', 'descricao')->ignore($_POST['id'], 'id'), 'max:255'],
+            'menu' => ['required'],
+            'idioma' => ['required'],
+        ]);
 
-		if ($this->pagina_model->edit($request, $field)) {
-			$status = 'success';
-			$message = 'Pagina atualizado com sucesso!';
-		} else {
-			$status = 'error';
-			$message = 'Não foi possível atualizar o pagina. Por favor, tente novamente.';
-		}
+        $request->validate([
+            'arquivo' => 'required|max:8192',
+        ]);
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
-	}
+        $url = url('admin/paginas ');
+        $type = 'back';
 
-	public function delete(Request $request)
-	{
+        if ($this->pagina_model->edit($request)) {
+            $status = 'success';
+            $message = 'Pagina atualizado com sucesso!';
+        } else {
+            $status = 'error';
+            $message = 'Não foi possível atualizar o pagina. Por favor, tente novamente.';
+        }
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+    }
 
-		$url = url('admin/paginas');
-		$type = 'back';
+    public function update_menu()
+    {
 
-		if ($this->pagina_model->remove($request)) {
-			$status = 'success';
-			$message = 'Pagina removido com sucesso!';
-		} else {
-			$type = null;
-			$status = 'error';
-			$message = 'Não foi possível remover o pagina. Por favor, tente novamente.';
-		}
+        $arvore = [];
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
-	}
+        if (isset($_POST['menus'])) {
+            $this->menus_pag = $_POST['menus'];
+        }
 
-	public function delete_file(Request $request, $id, $file)
-	{
+        return $this->pagina_model->update_menu($this->menus_pag);
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+    }
 
-		$url = url('admin/paginas');
-		$type = 'back';
+    public function replace(Request $request, $field)
+    {
 
-		if ($this->pagina_model->remove_file($file)) {
-			$status = 'success';
-			$message = 'Arquivo removido com sucesso!';
-		} else {
-			$type = null;
-			$status = 'error';
-			$message = 'Não foi possível remover o arquivo. Por favor, tente novamente.';
-		}
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+        }
 
-	}
+        $url = url('admin/paginas');
+        $type = null;
 
+        if ($this->pagina_model->edit($request, $field)) {
+            $status = 'success';
+            $message = 'Pagina atualizado com sucesso!';
+        } else {
+            $status = 'error';
+            $message = 'Não foi possível atualizar o pagina. Por favor, tente novamente.';
+        }
+
+        return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+    }
+
+    public function delete(Request $request)
+    {
+
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
+
+        }
+
+        $url = url('admin/paginas');
+        $type = 'back';
+
+        if ($this->pagina_model->remove($request)) {
+            $status = 'success';
+            $message = 'Pagina removido com sucesso!';
+        } else {
+            $type = null;
+            $status = 'error';
+            $message = 'Não foi possível remover o pagina. Por favor, tente novamente.';
+        }
+
+        return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+    }
+
+    public function delete_file(Request $request, $id, $file)
+    {
+
+        if (!Session::has('userdata')) {
+            if ($request->ajax()) {
+                return abort(403);
+            } else {
+                return redirect()->route('admin.auth.login');
+            }
+
+        }
+
+        $url = url('admin/paginas');
+        $type = 'back';
+
+        if ($this->pagina_model->remove_file($file)) {
+            $status = 'success';
+            $message = 'Arquivo removido com sucesso!';
+        } else {
+            $type = null;
+            $status = 'error';
+            $message = 'Não foi possível remover o arquivo. Por favor, tente novamente.';
+        }
+
+        return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+
+    }
+
+    public function getPaginas($id_menu, $id_parent = 0)
+    {
+
+        $ul = '';
+        $li = '';
+
+        $menus = $this->pagina_model->getSubPages($id_menu, $id_parent);
+
+        if ($menus) {
+
+            $ul .= '<ol class="dd-list" data-menu="' . $id_menu . '">';
+
+            foreach ($menus as $m) {
+
+                $submenus = $this->pagina_model->getSubPages($id_menu, $m->id_pagina);
+
+                $submenu = null;
+
+                $link = url($m->link . '/' . $m->slug);
+
+                $ul .= '<li class="dd-item" data-id="' . $m->id_pagina . '">';
+
+                $ul .= '<div class="dd-handle dd3-handle"></div>';
+                $ul .= '<div class="dd-content">';
+                $ul .= $m->descricao;
+                $ul .= '<button class="btn btn-small btn-flat btn-floating" style="margin-top: 0 !important;" data-href="' . route('admin.paginas.edit', $m->id_pagina) . '"><i class="material-icons">edit</i></button></div>';
+
+                $ul .= $this->getPaginas($id_menu, $m->id_pagina);
+                $ul .= '</li>';
+
+            }
+
+            $ul .= '</ol>';
+
+        }
+
+        return $ul;
+
+    }
 
 }

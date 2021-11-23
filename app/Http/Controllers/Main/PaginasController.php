@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Main;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
+use Illuminate\Http\Request;
 
 class PaginasController extends Controller
 {
@@ -75,15 +76,29 @@ class PaginasController extends Controller
 
                 $submenu = null;
 
-                if ($id_parent != 0) {
-                    $submenu = $this->getMenus($id_menu, $m->id_pagina);
-                }
+                // $submenus = $this->pagina_model->select('id')
+                //     ->from('tb_pagina')
+                //     ->where('id_pagina', $m->id_parent)
+                //     ->where('id_menu', $id_menu)
+                //     ->get();
 
-                $link = $m->id_pagina == 0 ? 'javascript:void(0);' : url($m->link . '/' . $m->slug);
+                // $link = $m->id_parent == 0 ? 'javascript:void(0);' : url($m->link . '/' . $m->slug);
+
+                $link = url($m->link . '/' . $m->slug);
 
                 $ul .= '<li>';
-                $ul .= '<a href="' . $link . '" data-target="menu_pag_' . $m->id_pagina . '">' . tradutor($m->titulo) . '</a>';
-                $ul .= $submenu;
+                $ul .= '<a href="' . $link . '" data-target="menu_pag_' . $m->id_parent . '">' . tradutor($m->titulo);
+
+                $submenus = $this->pagina_model->getSubPages($id_menu, $m->id_pagina);
+
+                if ($submenus->count() > 0) {
+                    $ul .= '<i class="material-icons">arrow_right</i>';
+                }
+
+                $ul .= '</a>';
+
+                $ul .= $this->getMenus($id_menu, $m->id_pagina);
+
                 $ul .= '</li>';
             }
 
@@ -93,6 +108,30 @@ class PaginasController extends Controller
         }
 
         return $ul;
+
+    }
+
+    public function download(Request $request, $page, $file)
+    {
+
+        $file = $this->pagina_model->select(
+            'id',
+            'realname',
+            'path',
+            'size',
+            'clicks'
+        )
+            ->from('tb_attachment')
+            ->where('id', $file)
+            ->first();
+
+        $this->pagina_model->from('tb_attachment')->where('id', $file->id)->update(['clicks' => $file->clicks + 1]);
+
+        $ext = explode('.', basename($file->path));
+        $name = explode('.' . $ext[count($ext) - 1], $file->realname);
+        $filename = $page . '_' . $name[0] . '.' . $ext[count($ext) - 1];
+
+        return download($file->path, $filename);
 
     }
 

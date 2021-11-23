@@ -13,7 +13,7 @@ class FotoModel extends Authenticatable
 
     use HasFactory, Notifiable;
 
-    protected $table = 'tb_album';
+    protected $table = 'tb_album AS A';
 
     /**
      * The attributes that are mass assignable.
@@ -47,14 +47,14 @@ class FotoModel extends Authenticatable
 
     private $order = [
         null,
-        'descricao',
-        'status',
+        'A.descricao',
+        'A.status',
     ];
 
     public function getAlbum($find = null)
     {
 
-        $get = $this->select('*');
+        $get = $this->select('A.id', 'A.nome', 'A.imagem', 'A.titulo', 'A.descricao', 'A.created_at', 'A.status');
 
         if (!is_null($find)) {
             $get->where('id', $find);
@@ -87,15 +87,18 @@ class FotoModel extends Authenticatable
 
     public function getLastAlbum()
     {
+
         return $this->select(DB::raw('MAX(id) AS id'))->first();
+
     }
 
     public function getFotos($find = null)
     {
 
-        $get = $this->select('*');
+        $get = $this->select('B.id', 'B.titulo AS nome', 'B.descricao', 'B.path', 'B.status');
 
-        $get->from('tb_attachment');
+        $get->from('tb_attachment AS B');
+        $get->join('tb_album AS A', 'A.id', 'B.id_modulo', 'left');
 
         $get->where('id_modulo', $find);
         $get->where('modulo', 'album');
@@ -103,22 +106,22 @@ class FotoModel extends Authenticatable
         if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
             $get->where(function ($get) {
                 $search = $_GET['search']['value'];
-                $get->orWhere('id', 'like', $search . '%')
-                    ->orWhere('descricao', 'like', $search . '%')
-                    ->orWhere('status', 'like', $search . '%');
+                $get->orWhere('B.id', 'like', $search . '%')
+                    ->orWhere('B.descricao', 'like', $search . '%')
+                    ->orWhere('B.status', 'like', $search . '%');
             });
         }
 
         // Order By
-        if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
-            $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
-        } else {
-            $orderBy[$this->order[1]] = 'desc';
-        }
+        // if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
+        //     $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
+        // } else {
+        //     $orderBy[$this->order[1]] = 'desc';
+        // }
 
-        foreach ($orderBy as $key => $val) {
-            $get->orderBy($key, $val);
-        }
+        // foreach ($orderBy as $key => $val) {
+        //     $get->orderBy($key, $val);
+        // }
 
         return $get->paginate($_GET['length'] ?? null);
 

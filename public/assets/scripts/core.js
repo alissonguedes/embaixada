@@ -35,6 +35,26 @@ function core() {
     App.aplicarMascaras();
     preview_map();
 
+    $('.dd').nestable({
+        maxDepth: Infinity
+    });
+
+    var id_item = null;
+    $('.dd').each(function() {
+        var self = $(this);
+
+        self.on('change', function() {
+            Http.post('paginas/menus', {
+                'data': {
+                    'menus': self.nestable('serialize'),
+                    'idMenu': self.find('.dd-list').data('menu')
+                }
+            }, function(response) {
+                console.log('Response: ', response);
+            })
+        });
+    })
+
     setTimeout(function() {
         Storage.checkSession();
     }, 200);

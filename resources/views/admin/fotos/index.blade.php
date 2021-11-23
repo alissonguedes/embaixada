@@ -32,20 +32,20 @@
 
                     @foreach ($paginate as $row)
 
-                        <div id="file_{{ $row->id }}" class="col s12 m6 l3">
+                        <div id="file_{{ $row->id }}" class="col s12 m6 l3 pl-0">
                             <div class="card album border-radius-2 bg-opacity-8">
                                 <button class="dropdown-trigger btn btn-floating btn-small z-depth-2" href="#" data-target="dropdown_{{ $row->id }}">
                                     <i class="material-icons">more_horiz</i>
                                 </button>
                                 <ul id='dropdown_{{ $row->id }}' class='dropdown-content'>
                                     <li>
-                                        <button id="{{ $row->id }}" class="modal-trigger" data-href="#" data-target="modal-fotos">
+                                        <button id="{{ $row->id }}" class="modal-trigger" data-target="modal-fotos">
                                             <i class="material-icons">edit</i>
                                             Editar álbum
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="___class_+?15___" data-href="{{ route('admin.fotos.edit', $row->id) }}">
+                                        <button data-href="{{ route('admin.fotos.edit', $row->id) }}">
                                             <i class="material-icons">visibility</i>
                                             Adicionar/Editar fotos
                                         </button>
@@ -68,6 +68,12 @@
                         </div>
 
                     @endforeach
+
+                @else
+
+                    <div class="col s12 center-align">
+                        Nenhum registro encontrado.
+                    </div>
 
                 @endif
 
@@ -97,7 +103,7 @@
 
                         </div>
 
-                        <div class="modal-footer">
+                        <div class="modal-footer pl-5 pr-5">
 
                             <button type="submit" class="btn inverse btn-small right waves-effect">
                                 <i class="material-icons left">save</i> Salvar
