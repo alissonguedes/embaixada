@@ -107,7 +107,7 @@ function download($path, $filename)
 
     $headers = null;
 
-    // $headers .= ('Content-Description: File Transfer');
+	// $headers .= ('Content-Description: File Transfer');
     // $headers .= ('Content-Type: application/octet-stream');
     // $headers .= ('Content-Disposition: attachment; filename=' . $filename);
     // $headers .= ('Content-Transfer-Encoding: binary');
